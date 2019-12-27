@@ -10,9 +10,12 @@ class Hanoi
 {
     private $state;
     private $movesCount = 0;
+    private $size;
 
     public function __construct(int $number)
     {
+        $this->size = $number;
+
         $this->state = [
             range($number, 1),  // 例えば $number が 3 なら [3,2,1] という配列になる
             [],
@@ -91,13 +94,24 @@ class Hanoi
 
     public function __toString() : string
     {
-        $format = <<<EOS
-| %s
-| %s
-| %s
----
+        $output = '';
 
-EOS;
-        return sprintf($format, implode(',', $this->state[0]), implode(',', $this->state[1]), implode(',', $this->state[2]));
+        for ($i = $this->size; $i >= 0; $i--) {
+            for ($peg = 0; $peg < 3; $peg++) {
+                if (isset($this->state[$peg][$i])) {
+                    $output .= str_repeat(' ', $this->size - $this->state[$peg][$i]);
+                    $output .= '[' . str_repeat('=', $this->state[$peg][$i]) . '|' . str_repeat('=', $this->state[$peg][$i]) . ']';
+                    $output .= str_repeat(' ', $this->size - $this->state[$peg][$i]);
+                } else {
+                    $output .= str_repeat(' ', $this->size + 1) . '|' . str_repeat(' ', $this->size + 1);
+                }
+            }
+
+            $output .= "\n";
+        }
+
+        $output .= str_repeat('-', ($this->size + 1) * 6 + 3) . "\n";
+
+        return $output;
     }
 }
