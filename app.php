@@ -42,14 +42,25 @@ class Hanoi
      */
     public function move(int $from, int $to, int $number = null) : void
     {
+        // 一応不正な入力をチェック
+        assert(0 <= $from && $from <= 2);
+        assert(0 <= $to && $to <= 2);
+        assert($from !== $to);
+
         // $number が省略された場合は $from の杭にあるすべての円盤を移動させる
         $number = $number ?? count($this->state[$from]);
 
         // 移動させたい枚数が1枚だけのときはただ移動させるだけ（$this->moveOne() を使う）
-        // （ここに実装を書く）
+        if ($number === 1) {
+            $this->moveOne($from, $to);
+
+            return;
+        }
 
         // 移動させたい枚数が2枚以上のときは move メソッドを再帰的に使う
-        // （ここに実装を書く）
+        $this->move($from, $buf = 3 - $from - $to, $number - 1);
+        $this->moveOne($from, $to);
+        $this->move($buf, $to, $number - 1);
     }
 
     /**
@@ -60,8 +71,16 @@ class Hanoi
      */
     private function moveOne(int $from, int $to) : void
     {
+        // 一応不正な入力をチェック
+        assert(0 <= $from && $from <= 2);
+        assert(0 <= $to && $to <= 2);
+        assert($from !== $to);
+        assert(count($this->state[$from]) > 0);
+        assert(count($this->state[$to]) === 0 || end($this->state[$to]) > end($this->state[$from]));
+
         // 円盤を1枚だけ移動させる処理
-        // （ここに実装を書く）
+        $popped = array_pop($this->state[$from]);
+        array_push($this->state[$to], $popped);
 
         // 円盤を移動させた回数をカウント
         $this->movesCount++;
